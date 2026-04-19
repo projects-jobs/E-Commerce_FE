@@ -1,44 +1,44 @@
-// eslint-disable-next-line react-refresh/only-export-components
+// src/context/AuthContext.jsx
 import { createContext, useContext, useState, useEffect } from 'react'
-import axios from 'axios'
+import { authAPI } from '../api/index'
 import toast from 'react-hot-toast'
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
 const AuthContext = createContext(null)
 
 export function AuthProvider({ children }) {
-  const [user, setUser] = useState(() => {
-    try { return JSON.parse(localStorage.getItem('kf_user')) || null }
+  const [user,    setUser]    = useState(() => {
+    try { return JSON.parse(localStorage.getItem('ec_user')) || null }
     catch { return null }
   })
   const [loading, setLoading] = useState(false)
 
   useEffect(() => {
-    const token = localStorage.getItem('kf_token')
+    const token = localStorage.getItem('ec_token')
     if (token && !user) {
-      axios.get(`${BASE}/auth/me`, { headers: { Authorization: `Bearer ${token}` } })
-        .then(r => setUser(r.data.user))
+      authAPI.me()
+        .then(r => saveSession(r.data.token || token, r.data.user))
         .catch(() => logout())
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [])
 
   const saveSession = (token, userObj) => {
-    localStorage.setItem('kf_token', token)
-    localStorage.setItem('kf_user', JSON.stringify(userObj))
+    localStorage.setItem('ec_token', token)
+    localStorage.setItem('ec_user',  JSON.stringify(userObj))
     setUser(userObj)
   }
 
   const login = async (email, password) => {
     setLoading(true)
     try {
-      const { data } = await axios.post(`${BASE}/auth/login`, { email, password })
+      const { data } = await authAPI.login({ email, password })
       saveSession(data.token, data.user)
-      toast.success(`Welcome back, ${data.user.name}!`)
+      toast.success(`Welcome back, ${data.user.name}! 👋`)
       return data.user
-    } catch (e) {
-      toast.error(e.response?.data?.message || 'Login failed')
-    }
-    finally {
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Login failed')
+      throw err
+    } finally {
       setLoading(false)
     }
   }
@@ -46,32 +46,37 @@ export function AuthProvider({ children }) {
   const register = async (name, email, password) => {
     setLoading(true)
     try {
-      const { data } = await axios.post(`${BASE}/auth/register`, { name, email, password })
+      const { data } = await authAPI.register({ name, email, password })
       saveSession(data.token, data.user)
-      toast.success('Account created! Welcome to Kartify 🎉')
+      toast.success('Account created! Welcome 🎉')
       return data.user
-    } catch (e) {
-      toast.error(e.response?.data?.message || 'Registration failed')
+    } catch (err) {
+      toast.error(err.response?.data?.message || 'Registration failed')
+      throw err
     } finally {
       setLoading(false)
     }
   }
 
   const logout = () => {
-    localStorage.removeItem('kf_token')
-    localStorage.removeItem('kf_user')
+    localStorage.removeItem('ec_token')
+    localStorage.removeItem('ec_user')
     setUser(null)
     toast('Logged out', { icon: '👋' })
   }
 
   const updateUser = (u) => {
     const merged = { ...user, ...u }
-    localStorage.setItem('kf_user', JSON.stringify(merged))
+    localStorage.setItem('ec_user', JSON.stringify(merged))
     setUser(merged)
   }
 
   return (
-    <AuthContext.Provider value={{ user, loading, login, register, logout, updateUser, isAdmin: user?.role === 'admin' }}>
+    <AuthContext.Provider value={{
+      user, loading,
+      login, register, logout, updateUser,
+      isAdmin: user?.role === 'admin'
+    }}>
       {children}
     </AuthContext.Provider>
   )

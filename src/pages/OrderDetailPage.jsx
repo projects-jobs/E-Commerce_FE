@@ -1,48 +1,47 @@
-import React from 'react';
-import { 
-  Package, 
-  Truck, 
-  CheckCircle2, 
-  Calendar, 
-  MapPin, 
-  CreditCard, 
+import {
+  Package,
+  Truck,
+  CheckCircle2,
+  Calendar,
+  MapPin,
+  CreditCard,
   ArrowLeft,
   Download,
-  MessageSquare
-} from 'lucide-react';
+  MessageSquare,
+} from 'lucide-react'
 
 const OrderDetailPage = () => {
   // Mock data following your Order Schema structure
   const order = {
-    _id: "ORD-8829-PX10",
-    createdAt: "2024-03-15T10:30:00Z",
-    orderStatus: "Shipped",
+    _id: 'ORD-8829-PX10',
+    createdAt: '2024-03-15T10:30:00Z',
+    orderStatus: 'Shipped',
     items: [
-      { name: "Aura Headphones", price: 299, quantity: 1, image: "https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200" },
-      { name: "Leather Carry Case", price: 45, quantity: 2, image: "https://images.unsplash.com/photo-1544816153-199d8bbbc197?q=80&w=200" }
+      { name: 'Aura Headphones',    price: 299, quantity: 1, image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?q=80&w=200' },
+      { name: 'Leather Carry Case', price: 45,  quantity: 2, image: 'https://images.unsplash.com/photo-1544816153-199d8bbbc197?q=80&w=200' },
     ],
     shippingAddress: {
-      street: "450 Silicon Valley Blvd",
-      city: "Bangalore",
-      state: "Karnataka",
-      pincode: "560001",
-      country: "India"
+      street:  '450 Silicon Valley Blvd',
+      city:    'Bangalore',
+      state:   'Karnataka',
+      pincode: '560001',
+      country: 'India',
     },
-    itemsPrice: 389,
-    taxPrice: 15,
+    itemsPrice:    389,
+    taxPrice:      15,
     shippingPrice: 0,
-    totalPrice: 404,
+    totalPrice:    404,
     statusHistory: [
-      { status: "Shipped", updatedAt: "2024-03-16", note: "Package is with the carrier" },
-      { status: "Processing", updatedAt: "2024-03-15", note: "Payment verified" },
-      { status: "Pending", updatedAt: "2024-03-15", note: "Order received" }
-    ]
-  };
+      { status: 'Shipped',    updatedAt: '2024-03-16', note: 'Package is with the carrier' },
+      { status: 'Processing', updatedAt: '2024-03-15', note: 'Payment verified'             },
+      { status: 'Pending',    updatedAt: '2024-03-15', note: 'Order received'               },
+    ],
+  }
 
   return (
     <div className="min-h-screen bg-slate-50 py-12 px-4 sm:px-6 lg:px-8">
       <div className="max-w-5xl mx-auto">
-        
+
         {/* Header Actions */}
         <div className="flex flex-col md:flex-row justify-between items-start md:items-center mb-8 gap-4">
           <div className="flex items-center gap-4">
@@ -65,17 +64,17 @@ const OrderDetailPage = () => {
         </div>
 
         <div className="grid grid-cols-1 lg:grid-cols-3 gap-8">
-          
+
           {/* Main Content: Items & Tracking */}
           <div className="lg:col-span-2 space-y-8">
-            
+
             {/* Order Items Card */}
             <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
               <h2 className="text-lg font-black italic mb-6 tracking-tighter">SHIPMENT CONTENT.</h2>
               <div className="divide-y divide-slate-50">
                 {order.items.map((item, idx) => (
                   <div key={idx} className="py-6 flex items-center gap-6">
-                    <img src={item.image} className="w-20 h-20 rounded-2xl object-cover bg-slate-100" />
+                    <img src={item.image} alt={item.name} className="w-20 h-20 rounded-2xl object-cover bg-slate-100" />
                     <div className="flex-1">
                       <h3 className="font-bold text-slate-900">{item.name}</h3>
                       <p className="text-xs text-slate-400 font-bold uppercase tracking-widest mt-1">Qty: {item.quantity}</p>
@@ -86,7 +85,7 @@ const OrderDetailPage = () => {
               </div>
             </div>
 
-            {/* Tracking History (From statusHistory Schema) */}
+            {/* Tracking History */}
             <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
               <h2 className="text-lg font-black italic mb-8 tracking-tighter">TRACKING HISTORY.</h2>
               <div className="space-y-8 relative before:absolute before:inset-0 before:ml-5 before:h-full before:w-0.5 before:bg-slate-100">
@@ -108,11 +107,10 @@ const OrderDetailPage = () => {
 
           {/* Sidebar Content: Logistics & Totals */}
           <div className="space-y-8">
-            
+
             {/* Logistics Card */}
             <div className="bg-white rounded-[2.5rem] p-8 shadow-sm border border-slate-100">
               <div className="space-y-8">
-                {/* Shipping info */}
                 <div className="flex gap-4">
                   <div className="text-indigo-600"><MapPin size={24} /></div>
                   <div>
@@ -125,7 +123,6 @@ const OrderDetailPage = () => {
                   </div>
                 </div>
 
-                {/* Date info */}
                 <div className="flex gap-4">
                   <div className="text-indigo-600"><Calendar size={24} /></div>
                   <div>
@@ -134,7 +131,6 @@ const OrderDetailPage = () => {
                   </div>
                 </div>
 
-                {/* Payment info */}
                 <div className="flex gap-4">
                   <div className="text-indigo-600"><CreditCard size={24} /></div>
                   <div>
@@ -167,12 +163,11 @@ const OrderDetailPage = () => {
                 </div>
               </div>
             </div>
-
           </div>
         </div>
       </div>
     </div>
-  );
-};
+  )
+}
 
-export default OrderDetailPage;
+export default OrderDetailPage

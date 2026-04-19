@@ -1,19 +1,18 @@
-// src/pages/admin/AdminProducts.jsx
 import { useState, useEffect } from 'react'
 import { Link, useNavigate } from 'react-router-dom'
 import { Plus, Edit3, Trash2, Search, AlertCircle } from 'lucide-react'
 import axios from 'axios'
 import toast from 'react-hot-toast'
 
-const BASE = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
-const authH = () => ({ Authorization: `Bearer ${localStorage.getItem('kf_token')}` })
+const BASE  = import.meta.env.VITE_API_URL || 'http://localhost:5000/api'
+const authH = () => ({ Authorization: `Bearer ${localStorage.getItem('ec_token')}` })
 
 export default function AdminProducts() {
-  const navigate            = useNavigate()
-  const [products, setProducts] = useState([])
-  const [keyword,  setKeyword]  = useState('')
-  const [loading,  setLoading]  = useState(true)
-  const [deleting, setDeleting] = useState(null)
+  const navigate                    = useNavigate()
+  const [products, setProducts]     = useState([])
+  const [keyword,  setKeyword]      = useState('')
+  const [loading,  setLoading]      = useState(true)
+  const [deleting, setDeleting]     = useState(null)
 
   useEffect(() => { fetchProducts() }, [])
 
@@ -22,8 +21,11 @@ export default function AdminProducts() {
     try {
       const { data } = await axios.get(`${BASE}/products`, { headers: authH() })
       setProducts(data.products || data || [])
-    } catch { toast.error('Failed to load products') }
-    finally { setLoading(false) }
+    } catch {
+      toast.error('Failed to load products')
+    } finally {
+      setLoading(false)
+    }
   }
 
   const handleDelete = async (id) => {
@@ -33,8 +35,11 @@ export default function AdminProducts() {
       await axios.delete(`${BASE}/products/${id}`, { headers: authH() })
       setProducts(p => p.filter(x => x._id !== id))
       toast.success('Product deleted')
-    } catch { toast.error('Delete failed') }
-    finally { setDeleting(null) }
+    } catch {
+      toast.error('Delete failed')
+    } finally {
+      setDeleting(null)
+    }
   }
 
   const filtered = products.filter(p =>
@@ -51,21 +56,24 @@ export default function AdminProducts() {
             <Link to="/admin" className="text-xs text-slate-500 hover:text-indigo-400 transition-colors mb-1 inline-block">
               ← Dashboard
             </Link>
-            <h1 className="text-3xl font-black text-white tracking-tight" style={{ fontFamily:'Syne,sans-serif' }}>
-              Inventory
-            </h1>
+            <h1 className="text-3xl font-black text-white tracking-tight">Inventory</h1>
             <p className="text-slate-400 text-sm mt-0.5">{filtered.length} products</p>
           </div>
           <div className="flex gap-3 w-full md:w-auto">
             <div className="relative flex-1 md:w-64">
-              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500"/>
-              <input value={keyword} onChange={e => setKeyword(e.target.value)}
+              <Search size={16} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-500" />
+              <input
+                value={keyword}
+                onChange={e => setKeyword(e.target.value)}
                 placeholder="Search products…"
-                className="input-dark pl-9 w-full"/>
+                className="w-full bg-[#1e293b] border border-slate-700 rounded-xl px-4 pl-9 py-2.5 text-sm text-white placeholder-slate-500 focus:outline-none focus:border-indigo-500 transition-colors"
+              />
             </div>
-            <button onClick={() => navigate('/admin/products/new')}
-              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/20 whitespace-nowrap">
-              <Plus size={18}/> Add Product
+            <button
+              onClick={() => navigate('/admin/products/new')}
+              className="flex items-center gap-2 bg-indigo-600 hover:bg-indigo-500 text-white px-5 py-2.5 rounded-xl text-sm font-bold transition-all shadow-lg shadow-indigo-500/20 whitespace-nowrap"
+            >
+              <Plus size={18} /> Add Product
             </button>
           </div>
         </div>
@@ -73,15 +81,19 @@ export default function AdminProducts() {
         {/* Grid */}
         {loading ? (
           <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
-            {[...Array(6)].map((_,i) => <div key={i} className="h-72 bg-[#1e293b] rounded-3xl animate-pulse"/>)}
+            {[...Array(6)].map((_, i) => (
+              <div key={i} className="h-72 bg-[#1e293b] rounded-3xl animate-pulse" />
+            ))}
           </div>
         ) : filtered.length === 0 ? (
           <div className="flex flex-col items-center justify-center py-24 text-center">
-            <AlertCircle size={48} className="text-slate-600 mb-4"/>
+            <AlertCircle size={48} className="text-slate-600 mb-4" />
             <h3 className="text-xl font-bold text-white">No products found</h3>
             <p className="text-slate-500 mt-1">{keyword ? 'Try a different search' : 'Add your first product'}</p>
-            <button onClick={() => navigate('/admin/products/new')}
-              className="mt-6 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-500 transition-all">
+            <button
+              onClick={() => navigate('/admin/products/new')}
+              className="mt-6 bg-indigo-600 text-white px-6 py-2.5 rounded-xl text-sm font-bold hover:bg-indigo-500 transition-all"
+            >
               Add Product
             </button>
           </div>
@@ -92,22 +104,33 @@ export default function AdminProducts() {
                 {/* Image */}
                 <div className="relative h-44 bg-[#0f172a] overflow-hidden">
                   {p.images?.[0] ? (
-                    <img src={p.images[0]} alt={p.name} className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"/>
+                    <img
+                      src={p.images[0]}
+                      alt={p.name}
+                      className="w-full h-full object-cover opacity-80 group-hover:opacity-100 group-hover:scale-105 transition-all duration-300"
+                    />
                   ) : (
                     <div className="w-full h-full flex items-center justify-center text-5xl">📦</div>
                   )}
-                  <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent"/>
+                  <div className="absolute inset-0 bg-gradient-to-t from-[#1e293b] to-transparent" />
+
                   {/* Action buttons on hover */}
                   <div className="absolute top-3 right-3 flex gap-2 opacity-0 group-hover:opacity-100 transition-opacity">
-                    <button onClick={() => navigate(`/admin/products/${p._id}`)}
-                      className="p-2 bg-white text-slate-900 rounded-lg shadow-xl hover:bg-slate-100 transition-colors">
-                      <Edit3 size={14}/>
+                    <button
+                      onClick={() => navigate(`/admin/products/${p._id}`)}
+                      className="p-2 bg-white text-slate-900 rounded-lg shadow-xl hover:bg-slate-100 transition-colors"
+                    >
+                      <Edit3 size={14} />
                     </button>
-                    <button onClick={() => handleDelete(p._id)} disabled={deleting === p._id}
-                      className="p-2 bg-red-500 text-white rounded-lg shadow-xl hover:bg-red-600 transition-colors disabled:opacity-50">
-                      <Trash2 size={14}/>
+                    <button
+                      onClick={() => handleDelete(p._id)}
+                      disabled={deleting === p._id}
+                      className="p-2 bg-red-500 text-white rounded-lg shadow-xl hover:bg-red-600 transition-colors disabled:opacity-50"
+                    >
+                      <Trash2 size={14} />
                     </button>
                   </div>
+
                   {/* Stock badge */}
                   <div className="absolute bottom-3 left-3">
                     <span className={`px-2 py-0.5 rounded-full text-xs font-bold ${p.stock > 0 ? 'bg-emerald-500/20 text-emerald-400' : 'bg-red-500/20 text-red-400'}`}>
